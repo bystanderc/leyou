@@ -1,6 +1,7 @@
 /.idea/*
-*.iml
+*.imlgit
 .gitignore
+*/target/*
 
 # Compiled class file
 *.class
