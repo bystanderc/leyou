@@ -6,10 +6,14 @@ import com.leyou.common.vo.PageResult;
 import com.leyou.item.pojo.Brand;
 import com.leyou.service.service.BrandService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 
 /**
@@ -25,6 +29,15 @@ public class BrandController {
     private BrandService brandService;
 
 
+    /**
+     * 分页查询品牌信息
+     * @param page
+     * @param rows
+     * @param sortBy
+     * @param desc
+     * @param key
+     * @return
+     */
     @RequestMapping("page")
     public ResponseEntity<PageResult<Brand>> queryBrandByPage(
             @RequestParam(value = "page",defaultValue = "1")Integer page,
@@ -33,11 +46,22 @@ public class BrandController {
             @RequestParam(value = "desc",defaultValue = "false")Boolean desc,
             @RequestParam(value = "key",required = false)String key
     ) {
-       PageResult<Brand> result = brandService.queryBrandByPageAndSort(page, rows, sortBy, desc, key);
-        if (result == null || result.getItems().size() == 0) {
-            throw new LyException(ExceptionEnum.BRAND_NOT_FOUND);
-        }
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(brandService.queryBrandByPageAndSort(page, rows, sortBy, desc, key));
 
     }
+
+
+    /**
+     * 新增品牌
+     * @param brand
+     * @param cids  品牌所在的分类ID（多个分类）
+     * @return
+     */
+    @PostMapping
+    public ResponseEntity<Void> addBrand(Brand brand, @RequestParam("cids") List<Long> cids) {
+        brandService.saveBrand(brand, cids);
+        return new ResponseEntity(HttpStatus.CREATED);
+    }
+
+
 }

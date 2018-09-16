@@ -49,4 +49,21 @@ public class BrandServiceImpl implements BrandService {
 
         return new PageResult<>(pageInfo.getTotal(), brandList);
     }
+
+    @Override
+    public void saveBrand(Brand brand, List<Long> cids) {
+        brand.setId(null);
+        int resultCount = brandMapper.insert(brand);
+        if (resultCount == 0) {
+            throw new LyException(ExceptionEnum.BRAND_CREATE_FAILED);
+        }
+        //更新品牌分类表
+        for (Long cid : cids) {
+            resultCount = brandMapper.saveCategoryBrand(cid, brand.getId());
+
+            if (resultCount == 0) {
+                throw new LyException(ExceptionEnum.BRAND_CREATE_FAILED);
+            }
+        }
+    }
 }
