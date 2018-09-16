@@ -13,6 +13,7 @@ public enum ExceptionEnum {
 
     PRICE_NOT_NULL(400, "价格不能为空！"),
     CATEGORY_NOT_FOUND(404, "分类未查询到"),
+    BRAND_NOT_FOUND(404, "品牌查询失败"),
     ;
     int value;
     String message;
