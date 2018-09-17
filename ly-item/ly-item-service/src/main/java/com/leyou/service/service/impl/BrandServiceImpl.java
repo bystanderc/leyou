@@ -6,11 +6,14 @@ import com.leyou.common.enums.ExceptionEnum;
 import com.leyou.common.exception.LyException;
 import com.leyou.common.vo.PageResult;
 import com.leyou.item.pojo.Brand;
+import com.leyou.item.pojo.Category;
+import com.leyou.item.vo.BrandVo;
 import com.leyou.service.mapper.BrandMapper;
 import com.leyou.service.service.BrandService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import tk.mybatis.mapper.entity.Example;
 
@@ -50,6 +53,7 @@ public class BrandServiceImpl implements BrandService {
         return new PageResult<>(pageInfo.getTotal(), brandList);
     }
 
+    @Transactional
     @Override
     public void saveBrand(Brand brand, List<Long> cids) {
         brand.setId(null);
@@ -64,6 +68,56 @@ public class BrandServiceImpl implements BrandService {
             if (resultCount == 0) {
                 throw new LyException(ExceptionEnum.BRAND_CREATE_FAILED);
             }
+        }
+    }
+
+    @Override
+    public List<Category> queryBrandByBid(Long bid) {
+        return brandMapper.queryCategoryByBid(bid);
+    }
+
+    @Transactional
+    @Override
+    public void updateBrand(BrandVo brandVo) {
+        Brand brand = new Brand();
+        brand.setId(brandVo.getId());
+        brand.setName(brandVo.getName());
+        brand.setImage(brandVo.getImage());
+        brand.setLetter(brandVo.getLetter());
+
+        //更新
+        int resultCount = brandMapper.updateByPrimaryKey(brand);
+        if (resultCount == 0) {
+            throw new LyException(ExceptionEnum.UPDATE_BRAND_FAILED);
+        }
+        List<Long> cids = brandVo.getCids();
+        //更新品牌分类表
+
+
+        brandMapper.deleteCategoryBrandByBid(brandVo.getId());
+
+        for (Long cid : cids) {
+            resultCount = brandMapper.saveCategoryBrand(cid, brandVo.getId());
+            if (resultCount == 0) {
+                throw new LyException(ExceptionEnum.UPDATE_BRAND_FAILED);
+            }
+
+        }
+
+
+    }
+
+    @Transactional
+    @Override
+    public void deleteBrand(Long bid) {
+        int result = brandMapper.deleteByPrimaryKey(bid);
+        if (result == 0) {
+            throw new LyException(ExceptionEnum.DELETE_BRAND_EXCEPTION);
+        }
+        //删除中间表
+        result = brandMapper.deleteCategoryBrandByBid(bid);
+        if (result == 0) {
+            throw new LyException(ExceptionEnum.DELETE_BRAND_EXCEPTION);
         }
     }
 }

@@ -1,17 +1,13 @@
 package com.leyou.service.web;
 
-import com.leyou.common.enums.ExceptionEnum;
-import com.leyou.common.exception.LyException;
 import com.leyou.common.vo.PageResult;
 import com.leyou.item.pojo.Brand;
+import com.leyou.item.vo.BrandVo;
 import com.leyou.service.service.BrandService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -31,6 +27,7 @@ public class BrandController {
 
     /**
      * 分页查询品牌信息
+     *
      * @param page
      * @param rows
      * @param sortBy
@@ -40,11 +37,11 @@ public class BrandController {
      */
     @RequestMapping("page")
     public ResponseEntity<PageResult<Brand>> queryBrandByPage(
-            @RequestParam(value = "page",defaultValue = "1")Integer page,
-            @RequestParam(value = "rows",defaultValue = "5")Integer rows,
-            @RequestParam(value = "sortBy",required = false)String sortBy,
-            @RequestParam(value = "desc",defaultValue = "false")Boolean desc,
-            @RequestParam(value = "key",required = false)String key
+            @RequestParam(value = "page", defaultValue = "1") Integer page,
+            @RequestParam(value = "rows", defaultValue = "5") Integer rows,
+            @RequestParam(value = "sortBy", required = false) String sortBy,
+            @RequestParam(value = "desc", defaultValue = "false") Boolean desc,
+            @RequestParam(value = "key", required = false) String key
     ) {
         return ResponseEntity.ok(brandService.queryBrandByPageAndSort(page, rows, sortBy, desc, key));
 
@@ -53,6 +50,7 @@ public class BrandController {
 
     /**
      * 新增品牌
+     *
      * @param brand
      * @param cids  品牌所在的分类ID（多个分类）
      * @return
@@ -61,6 +59,25 @@ public class BrandController {
     public ResponseEntity<Void> addBrand(Brand brand, @RequestParam("cids") List<Long> cids) {
         brandService.saveBrand(brand, cids);
         return new ResponseEntity(HttpStatus.CREATED);
+    }
+
+
+    /**
+     * 更新品牌
+     *
+     * @param brandVo
+     * @return
+     */
+    @PutMapping
+    public ResponseEntity<Void> updateBrand(BrandVo brandVo) {
+        brandService.updateBrand(brandVo);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("bid/{bid}")
+    public ResponseEntity<Void> deleteBrand(@PathVariable("bid") Long bid) {
+        brandService.deleteBrand(bid);
+        return ResponseEntity.ok().build();
     }
 
 
