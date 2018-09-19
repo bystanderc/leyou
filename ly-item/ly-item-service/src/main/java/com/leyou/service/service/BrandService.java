@@ -22,4 +22,6 @@ public interface BrandService {
     void updateBrand(BrandVo brandVo);
 
     void deleteBrand(Long bid);
+
+    List<Brand> queryBrandByCid(Long cid);
 }
