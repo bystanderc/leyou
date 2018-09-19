@@ -22,4 +22,9 @@ public interface GoodsService {
     void deleteGoodsBySpuId(Long spuId);
 
     void addGoods(Spu spu);
+
+    void updateGoods(Spu spu);
+
+    void handleSaleable(Spu spu);
+
 }

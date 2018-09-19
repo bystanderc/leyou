@@ -5,6 +5,7 @@ import com.leyou.item.pojo.SpecParam;
 import com.leyou.service.service.SpecGroupService;
 import com.leyou.service.service.SpecParamService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,10 +39,11 @@ public class SpecController {
 
     /**
      * 查询商品规格参数
-     * @param gid  规格组ID
-     * @param cid  商品分类ID
-     * @param searching  是否是搜索字段
-     * @param generic  是否是通用字段
+     *
+     * @param gid       规格组ID
+     * @param cid       商品分类ID
+     * @param searching 是否是搜索字段
+     * @param generic   是否是通用字段
      * @return
      */
     @GetMapping("params")
@@ -52,6 +54,80 @@ public class SpecController {
             @RequestParam(value = "generic", required = false) Boolean generic
     ) {
         return ResponseEntity.ok(specParamService.querySpecParams(gid, cid, searching, generic));
+    }
+
+    /**
+     * 增加商品规格组
+     *
+     * @param specGroup
+     * @return
+     */
+    @PostMapping("group")
+    public ResponseEntity<Void> saveSpecGroup(@RequestBody SpecGroup specGroup) {
+        specGroupService.saveSpecGroup(specGroup);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    /**
+     * 删除商品规格组
+     *
+     * @param id
+     * @return
+     */
+    @DeleteMapping("group/{id}")
+    public ResponseEntity<Void> deleteSpecGroup(@PathVariable("id") Long id) {
+        specGroupService.deleteSpecGroup(id);
+        return ResponseEntity.ok().build();
+
+    }
+
+    /**
+     * 更新商品规格组
+     *
+     * @param specGroup
+     * @return
+     */
+    @PutMapping("group")
+    public ResponseEntity<Void> updateSpecGroup(@RequestBody SpecGroup specGroup) {
+        specGroupService.updateSpecGroup(specGroup);
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * 增加商品规格参数
+     *
+     * @param specParam
+     * @return
+     */
+    @PostMapping("param")
+    public ResponseEntity<Void> saveSpecParam(@RequestBody SpecParam specParam) {
+        specParamService.saveSpecParam(specParam);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    /**
+     * 删除商品规格参数
+     *
+     * @param id
+     * @return
+     */
+    @DeleteMapping("param/{id}")
+    public ResponseEntity<Void> deleteSpecParam(@PathVariable("id") Long id) {
+        specParamService.deleteSpecParam(id);
+        return ResponseEntity.ok().build();
+
+    }
+
+    /**
+     * 更新商品规格参数
+     *
+     * @param specParam
+     * @return
+     */
+    @PutMapping("param")
+    public ResponseEntity<Void> updateSpecParam(@RequestBody SpecParam specParam) {
+        specParamService.updateSpecParam(specParam);
+        return ResponseEntity.ok().build();
     }
 
 

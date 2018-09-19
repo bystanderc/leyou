@@ -63,6 +63,7 @@ public class GoodsController {
      */
     @DeleteMapping("spu/spuId/{spuId}")
     public ResponseEntity<Void> deleteGoodsBySpuId(@PathVariable("spuId") Long spuId) {
+        goodsService.deleteGoodsBySpuId(spuId);
         return ResponseEntity.ok().build();
     }
 
@@ -76,6 +77,24 @@ public class GoodsController {
     public ResponseEntity<Void> addGoods(@RequestBody Spu spu) {
         goodsService.addGoods(spu);
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    /**
+     * 更新商品
+     * @param spu
+     * @return
+     */
+    @PutMapping("goods")
+    public ResponseEntity<Void> updateGoods(@RequestBody Spu spu) {
+        goodsService.updateGoods(spu);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("spu/saleable")
+    public ResponseEntity<Void> handleSaleable(@RequestBody Spu spu) {
+        goodsService.handleSaleable(spu);
+        return ResponseEntity.ok().build();
+
     }
 
 

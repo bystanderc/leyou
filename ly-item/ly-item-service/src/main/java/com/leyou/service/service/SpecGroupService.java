@@ -11,4 +11,10 @@ import java.util.List;
 public interface SpecGroupService {
 
     List<SpecGroup> querySpecGroupByCid(Long cid);
+
+    void saveSpecGroup(SpecGroup specGroup);
+
+    void deleteSpecGroup(Long id);
+
+    void updateSpecGroup(SpecGroup specGroup);
 }

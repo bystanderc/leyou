@@ -12,4 +12,9 @@ public interface SpecParamService {
 
     List<SpecParam> querySpecParams(Long gid, Long cid, Boolean searching, Boolean generic);
 
+    void saveSpecParam(SpecParam specParam);
+
+    void updateSpecParam(SpecParam specParam);
+
+    void deleteSpecParam(Long id);
 }

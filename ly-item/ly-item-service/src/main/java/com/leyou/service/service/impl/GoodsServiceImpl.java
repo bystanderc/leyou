@@ -48,7 +48,7 @@ public class GoodsServiceImpl implements GoodsService {
 
     @Override
     public PageResult<Spu> querySpuByPage(Integer page, Integer rows, String key, Boolean saleable) {
-        //分类
+        //分页
         PageHelper.startPage(page, rows);
 
         Example example = new Example(Spu.class);
@@ -60,6 +60,11 @@ public class GoodsServiceImpl implements GoodsService {
         if (saleable != null) {
             criteria.orEqualTo("saleable", saleable);
         }
+        //默认以上一次更新时间排序
+        example.setOrderByClause("last_update_time desc");
+
+        //只查询未删除的商品
+        criteria.andEqualTo("valid", 1);
 
         //查询
         List<Spu> spuList = spuMapper.selectByExample(example);
@@ -102,7 +107,17 @@ public class GoodsServiceImpl implements GoodsService {
 
     @Override
     public void deleteGoodsBySpuId(Long spuId) {
-        //todo
+        if (spuId == null) {
+            throw new LyException(ExceptionEnum.INVALID_PARAM);
+        }
+        //删除spu
+        Spu spu = new Spu();
+        spu.setId(spuId);
+        spu.setValid(false);
+        int count = spuMapper.updateByPrimaryKeySelective(spu);
+        if (count == 0) {
+            throw new LyException(ExceptionEnum.DELETE_GOODS_ERROR);
+        }
     }
 
     @Transactional
@@ -114,16 +129,71 @@ public class GoodsServiceImpl implements GoodsService {
         spu.setCreateTime(new Date());
         spu.setLastUpdateTime(spu.getCreateTime());
         //插入数据
-        spuMapper.insert(spu);
+        int count = spuMapper.insert(spu);
+        if (count != 1) {
+            throw new LyException(ExceptionEnum.GOODS_SAVE_ERROR);
+        }
         //插入spuDetail数据
         SpuDetail spuDetail = spu.getSpuDetail();
         spuDetail.setSpuId(spu.getId());
-        spuDetailMapper.insert(spuDetail);
+        count = spuDetailMapper.insert(spuDetail);
+        if (count != 1) {
+            throw new LyException(ExceptionEnum.GOODS_SAVE_ERROR);
+        }
 
         //插入sku和库存
         saveSkuAndStock(spu);
 
     }
+
+    @Transactional
+    @Override
+    public void updateGoods(Spu spu) {
+        if (spu.getId() == 0) {
+            throw new LyException(ExceptionEnum.INVALID_PARAM);
+        }
+        //首先查询sku
+        Sku sku = new Sku();
+        sku.setSpuId(spu.getId());
+        List<Sku> skuList = skuMapper.select(sku);
+        if (!CollectionUtils.isEmpty(skuList)) {
+            //删除所有sku
+            skuMapper.delete(sku);
+            //删除库存
+            List<Long> ids = skuList.stream()
+                    .map(Sku::getId)
+                    .collect(Collectors.toList());
+            stockMapper.deleteByIdList(ids);
+        }
+        //更新数据库  spu  spuDetail
+        spu.setLastUpdateTime(new Date());
+        //更新spu spuDetail
+        int count = spuMapper.updateByPrimaryKeySelective(spu);
+        if (count == 0) {
+            throw new LyException(ExceptionEnum.GOODS_UPDATE_ERROR);
+        }
+
+
+        SpuDetail spuDetail = spu.getSpuDetail();
+        spuDetail.setSpuId(spu.getId());
+        count = spuDetailMapper.updateByPrimaryKeySelective(spuDetail);
+        if (count == 0) {
+            throw new LyException(ExceptionEnum.GOODS_UPDATE_ERROR);
+        }
+
+        //更新sku和stock
+        saveSkuAndStock(spu);
+    }
+
+    @Override
+    public void handleSaleable(Spu spu) {
+        spu.setSaleable(!spu.getSaleable());
+        int count = spuMapper.updateByPrimaryKeySelective(spu);
+        if (count != 1) {
+            throw new LyException(ExceptionEnum.UPDATE_SALEABLE_ERROR);
+        }
+    }
+
 
     /**
      * 保存sku和库存
@@ -132,22 +202,27 @@ public class GoodsServiceImpl implements GoodsService {
      */
     private void saveSkuAndStock(Spu spu) {
         List<Sku> skuList = spu.getSkus();
-        //List<Stock> stocks = new ArrayList<>();
+        List<Stock> stocks = new ArrayList<>();
 
         for (Sku sku : skuList) {
             sku.setSpuId(spu.getId());
             sku.setCreateTime(new Date());
             sku.setLastUpdateTime(sku.getCreateTime());
-            skuMapper.insert(sku);
+            int count = skuMapper.insert(sku);
+            if (count != 1) {
+                throw new LyException(ExceptionEnum.GOODS_SAVE_ERROR);
+            }
 
             Stock stock = new Stock();
             stock.setSkuId(sku.getId());
             stock.setStock(sku.getStock());
-            stockMapper.insert(stock);
-//            stocks.add(stock);
+            stocks.add(stock);
         }
         //批量插入库存数据
-        //stockMapper.insertList(stocks);
+        int count = stockMapper.insertList(stocks);
+        if (count == 0) {
+            throw new LyException(ExceptionEnum.GOODS_SAVE_ERROR);
+        }
     }
 
 
