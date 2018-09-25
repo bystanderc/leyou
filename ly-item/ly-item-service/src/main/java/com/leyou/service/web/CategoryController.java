@@ -23,6 +23,11 @@ public class CategoryController {
     @Autowired
     private BrandService brandService;
 
+    /**
+     * 根据父类ID查询分类结果
+     * @param pid
+     * @return
+     */
     @GetMapping("list")
     public ResponseEntity<List<Category>> queryCategoryByPid(@RequestParam(value = "pid",defaultValue = "0") Long pid) {
         List<Category> categoryList = categoryService.queryCategoryByPid(pid);
@@ -36,7 +41,17 @@ public class CategoryController {
      * @return
      */
     @GetMapping("bid/{bid}")
-    public ResponseEntity<List<Category>> queryBrandByBid(@PathVariable("bid") Long bid) {
-        return ResponseEntity.ok(brandService.queryBrandByBid(bid));
+    public ResponseEntity<List<Category>> queryCategoryByBid(@PathVariable("bid") Long bid) {
+        return ResponseEntity.ok(brandService.queryCategoryByBid(bid));
+    }
+
+    /**
+     * 根据商品分类Ids查询分类
+     * @param ids
+     * @return
+     */
+    @GetMapping("list/ids")
+    public ResponseEntity<List<Category>> queryCategoryByIds(@RequestParam("ids") List<Long> ids) {
+        return ResponseEntity.ok(categoryService.queryCategoryByIds(ids));
     }
 }

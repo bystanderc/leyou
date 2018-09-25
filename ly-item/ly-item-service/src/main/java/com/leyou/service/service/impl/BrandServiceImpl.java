@@ -72,7 +72,7 @@ public class BrandServiceImpl implements BrandService {
     }
 
     @Override
-    public List<Category> queryBrandByBid(Long bid) {
+    public List<Category> queryCategoryByBid(Long bid) {
         return brandMapper.queryCategoryByBid(bid);
     }
 
@@ -128,5 +128,25 @@ public class BrandServiceImpl implements BrandService {
             throw new LyException(ExceptionEnum.BRAND_NOT_FOUND);
         }
         return brandList;
+    }
+
+    @Override
+    public Brand queryBrandByBid(Long id) {
+        Brand brand = new Brand();
+        brand.setId(id);
+        Brand b1 = brandMapper.selectByPrimaryKey(brand);
+        if (b1 == null) {
+            throw new LyException(ExceptionEnum.BRAND_NOT_FOUND);
+        }
+        return b1;
+    }
+
+    @Override
+    public List<Brand> queryBrandByIds(List<Long> ids) {
+        List<Brand> brands = brandMapper.selectByIdList(ids);
+        if (CollectionUtils.isEmpty(brands)) {
+            throw new LyException(ExceptionEnum.BRAND_NOT_FOUND);
+        }
+        return brands;
     }
 }

@@ -17,11 +17,15 @@ public interface BrandService {
 
     void saveBrand(Brand brand, List<Long> cids);
 
-    List<Category> queryBrandByBid(Long bid);
+    List<Category> queryCategoryByBid(Long bid);
 
     void updateBrand(BrandVo brandVo);
 
     void deleteBrand(Long bid);
 
     List<Brand> queryBrandByCid(Long cid);
+
+    Brand queryBrandByBid(Long id);
+
+    List<Brand> queryBrandByIds(List<Long> ids);
 }
