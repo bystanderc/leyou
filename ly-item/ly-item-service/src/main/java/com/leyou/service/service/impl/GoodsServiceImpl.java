@@ -194,6 +194,24 @@ public class GoodsServiceImpl implements GoodsService {
         }
     }
 
+    @Override
+    public Spu querySpuBySpuId(Long spuId) {
+        //根据spuId查询spu
+        Spu spu = spuMapper.selectByPrimaryKey(spuId);
+
+        //查询spuDetail
+        SpuDetail detail = querySpuDetailBySpuId(spuId);
+
+        //查询skus
+        List<Sku> skus = querySkuBySpuId(spuId);
+
+        spu.setSpuDetail(detail);
+        spu.setSkus(skus);
+
+        return spu;
+
+    }
+
 
     /**
      * 保存sku和库存

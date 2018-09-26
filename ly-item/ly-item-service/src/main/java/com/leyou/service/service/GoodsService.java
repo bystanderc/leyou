@@ -27,4 +27,5 @@ public interface GoodsService {
 
     void handleSaleable(Spu spu);
 
+    Spu querySpuBySpuId(Long spuId);
 }

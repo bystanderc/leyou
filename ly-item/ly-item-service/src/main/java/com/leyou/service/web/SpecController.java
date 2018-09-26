@@ -2,8 +2,7 @@ package com.leyou.service.web;
 
 import com.leyou.item.pojo.SpecGroup;
 import com.leyou.item.pojo.SpecParam;
-import com.leyou.service.service.SpecGroupService;
-import com.leyou.service.service.SpecParamService;
+import com.leyou.service.service.SpecService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,10 +19,7 @@ import java.util.List;
 public class SpecController {
 
     @Autowired
-    private SpecGroupService specGroupService;
-
-    @Autowired
-    private SpecParamService specParamService;
+    private SpecService specService;
 
 
     /**
@@ -34,7 +30,7 @@ public class SpecController {
      */
     @GetMapping("groups/{cid}")
     public ResponseEntity<List<SpecGroup>> querySpecGroupByCid(@PathVariable("cid") Long cid) {
-        return ResponseEntity.ok(specGroupService.querySpecGroupByCid(cid));
+        return ResponseEntity.ok(specService.querySpecGroupByCid(cid));
     }
 
     /**
@@ -53,7 +49,7 @@ public class SpecController {
             @RequestParam(value = "searching", required = false) Boolean searching,
             @RequestParam(value = "generic", required = false) Boolean generic
     ) {
-        return ResponseEntity.ok(specParamService.querySpecParams(gid, cid, searching, generic));
+        return ResponseEntity.ok(specService.querySpecParams(gid, cid, searching, generic));
     }
 
     /**
@@ -64,7 +60,7 @@ public class SpecController {
      */
     @PostMapping("group")
     public ResponseEntity<Void> saveSpecGroup(@RequestBody SpecGroup specGroup) {
-        specGroupService.saveSpecGroup(specGroup);
+        specService.saveSpecGroup(specGroup);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -76,7 +72,7 @@ public class SpecController {
      */
     @DeleteMapping("group/{id}")
     public ResponseEntity<Void> deleteSpecGroup(@PathVariable("id") Long id) {
-        specGroupService.deleteSpecGroup(id);
+        specService.deleteSpecGroup(id);
         return ResponseEntity.ok().build();
 
     }
@@ -89,7 +85,7 @@ public class SpecController {
      */
     @PutMapping("group")
     public ResponseEntity<Void> updateSpecGroup(@RequestBody SpecGroup specGroup) {
-        specGroupService.updateSpecGroup(specGroup);
+        specService.updateSpecGroup(specGroup);
         return ResponseEntity.ok().build();
     }
 
@@ -101,7 +97,7 @@ public class SpecController {
      */
     @PostMapping("param")
     public ResponseEntity<Void> saveSpecParam(@RequestBody SpecParam specParam) {
-        specParamService.saveSpecParam(specParam);
+        specService.saveSpecParam(specParam);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -113,7 +109,7 @@ public class SpecController {
      */
     @DeleteMapping("param/{id}")
     public ResponseEntity<Void> deleteSpecParam(@PathVariable("id") Long id) {
-        specParamService.deleteSpecParam(id);
+        specService.deleteSpecParam(id);
         return ResponseEntity.ok().build();
 
     }
@@ -126,8 +122,20 @@ public class SpecController {
      */
     @PutMapping("param")
     public ResponseEntity<Void> updateSpecParam(@RequestBody SpecParam specParam) {
-        specParamService.updateSpecParam(specParam);
+        specService.updateSpecParam(specParam);
         return ResponseEntity.ok().build();
+    }
+
+    /**
+     * 查询规格参数组，及组内参数
+     *
+     * @param cid
+     * @return
+     */
+    @GetMapping("{cid}")
+    public ResponseEntity<List<SpecGroup>> querySpecsByCid(@PathVariable("cid") Long cid) {
+        //todo
+        return ResponseEntity.ok(specService.querySpecsByCid(cid));
     }
 
 

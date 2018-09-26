@@ -15,6 +15,11 @@ import java.util.List;
  */
 @RequestMapping("spec")
 public interface SpecApi {
+
+    // 查询规格参数组，及组内参数
+    @GetMapping("{cid}")
+    List<SpecGroup> querySpecsByCid(@PathVariable("cid") Long cid);
+
     @GetMapping("params")
     List<SpecParam> querySpecParams(
             @RequestParam(value = "gid", required = false) Long gid,
