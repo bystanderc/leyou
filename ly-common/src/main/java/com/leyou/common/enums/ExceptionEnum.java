@@ -18,6 +18,7 @@ public enum ExceptionEnum {
 
     GOODS_SAVE_ERROR(500, "新增商品错误"),
     GOODS_NOT_FOUND(400, "商品未查询到"),
+    GOODS_NOT_SALEABLE(400, "商品未上架"),
     GOODS_UPDATE_ERROR(500, "商品更新失败"),
     DELETE_GOODS_ERROR(500, "删除商品错误"),
     UPDATE_SALEABLE_ERROR(500, "更新商品销售状态错误"),

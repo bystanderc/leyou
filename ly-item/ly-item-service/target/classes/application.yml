@@ -10,6 +10,19 @@ eureka:
 spring:
   application:
     name: item-service
+  rabbitmq:
+    host: 192.168.82.100
+    username: leyou
+    password: leyou
+    virtual-host: /leyou
+    template:
+      retry:
+        enabled: true
+        initial-interval: 10000ms
+        max-interval: 30000ms
+        multiplier: 2
+      exchange: ly.item.exchange
+    publisher-confirms: true
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://localhost:3306/leyou?useUnicode=true&characterEncoding=utf-8

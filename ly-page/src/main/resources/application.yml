@@ -5,6 +5,11 @@ spring:
     name: page-service
   thymeleaf:
     cache: false
+  rabbitmq:
+    host: 192.168.82.100
+    username: leyou
+    password: leyou
+    virtual-host: /leyou
 eureka:
   client:
     service-url:
@@ -12,3 +17,6 @@ eureka:
   instance:
     prefer-ip-address: true
     ip-address: 127.0.0.1
+ly:
+  page:
+    path: /Users/bystander/upload

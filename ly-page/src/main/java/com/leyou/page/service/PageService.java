@@ -1,5 +1,7 @@
 package com.leyou.page.service;
 
+import com.leyou.common.enums.ExceptionEnum;
+import com.leyou.common.exception.LyException;
 import com.leyou.item.pojo.*;
 import com.leyou.page.client.BrandClient;
 import com.leyou.page.client.CategoryClient;
@@ -7,6 +9,7 @@ import com.leyou.page.client.GoodsClient;
 import com.leyou.page.client.SpecClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -41,9 +44,18 @@ public class PageService {
     @Autowired
     private TemplateEngine templateEngine;
 
+    @Value("${ly.page.path}")
+    private String dest;
+
     public Map<String, Object> loadModel(Long spuId) {
         Map<String, Object> model = new HashMap<>();
         Spu spu = goodsClient.querySpuBySpuId(spuId);
+
+        //上架未上架，则不应该查询到商品详情信息，抛出异常
+        if (!spu.getSaleable()) {
+            throw new LyException(ExceptionEnum.GOODS_NOT_SALEABLE);
+        }
+
         SpuDetail detail = spu.getSpuDetail();
         List<Sku> skus = spu.getSkus();
         Brand brand = brandClient.queryById(spu.getBrandId());
@@ -66,10 +78,25 @@ public class PageService {
         Map<String, Object> map = loadModel(spuId);
         context.setVariables(map);
 
-        try (PrintWriter writer = new PrintWriter(new File("/Users/bystander/upload", spuId + ".html"))) {
+        File file = new File(this.dest, spuId + ".html");
+        //如果页面存在，先删除，后进行创建静态页
+        if (file.exists()) {
+            file.delete();
+        }
+        try (PrintWriter writer = new PrintWriter(file, "utf-8")) {
             templateEngine.process("item", context, writer);
         } catch (Exception e) {
             log.error("【静态页服务】生成静态页面异常", e);
+        }
+    }
+
+    public void deleteHtml(Long id) {
+        File file = new File(this.dest + id + ".html");
+        if (file.exists()) {
+            boolean flag = file.delete();
+            if (!flag) {
+                log.error("删除静态页面失败");
+            }
         }
     }
 }

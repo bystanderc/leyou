@@ -6,6 +6,7 @@ import com.leyou.item.pojo.Category;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author bystander
@@ -53,5 +54,22 @@ public class SearchResult<Goods> extends PageResult<Goods> {
 
     public void setSpecs(List<Map<String, Object>> specs) {
         this.specs = specs;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        SearchResult<?> that = (SearchResult<?>) o;
+        return Objects.equals(brands, that.brands) &&
+                Objects.equals(categories, that.categories) &&
+                Objects.equals(specs, that.specs);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(super.hashCode(), brands, categories, specs);
     }
 }
