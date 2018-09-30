@@ -26,3 +26,18 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+ly-api-gateway/src/test/
+ly-common/src/main/resources/
+ly-common/src/test/
+ly-item/ly-item-interface/src/main/resources/
+ly-item/ly-item-interface/src/test/
+ly-item/ly-item-interface/target/
+ly-item/ly-item-service/target/generated-sources/
+ly-item/ly-item-service/target/generated-test-sources/
+ly-item/ly-item-service/target/test-classes/
+ly-registry/src/test/
+ly-upload/src/test/
+ly-user-service/ly-user-interface/src/main/resources/
+ly-user-service/ly-user-interface/src/test/
+ly-user-service/ly-user-serivce/src/test/
+ly-user-service/src/

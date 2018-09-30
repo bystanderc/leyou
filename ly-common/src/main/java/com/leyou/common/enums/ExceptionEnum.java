@@ -30,6 +30,9 @@ public enum ExceptionEnum {
     INVALID_FILE_FORMAT(400, "文件格式错误"),
     UPLOAD_IMAGE_EXCEPTION(500, "文件上传异常"),
     INVALID_PARAM(400, "参数错误"),
+    VERIFY_CODE_NOT_MATCHING(400, "验证码错误"),
+    PASSWORD_NOT_MATCHING(400, "密码错误"),
+    USER_NOT_EXIST(404, "用户不存在"),
 
     SPEC_PARAM_NOT_FOUND(204, "规格参数查询失败"),
     UPDATE_SPEC_PARAM_FAILED(500, "商品规格参数更新失败"),
@@ -41,6 +44,7 @@ public enum ExceptionEnum {
     SPEC_GROUP_NOT_FOUND(204, "规格组查询失败"),
     DELETE_SPEC_GROUP_FAILED(500, "商品规格组删除失败"),
     UPDATE_SPEC_GROUP_FAILED(500, "商品规格组更新失败"),
+
 
     ;
     int value;

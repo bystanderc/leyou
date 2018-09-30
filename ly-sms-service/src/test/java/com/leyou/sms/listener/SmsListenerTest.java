@@ -27,7 +27,7 @@ public class SmsListenerTest {
     public void listenVerifyCode() throws InterruptedException {
         Map<String,String> map = new HashMap<>();
         map.put("phone", "15121037897");
-        map.put("code", "iamsosorryfromcc");
+        map.put("code", "ILoveYou");
         amqpTemplate.convertAndSend("ly.sms.exchange", "sms.verify.code", map);
 
         Thread.sleep(5000);
