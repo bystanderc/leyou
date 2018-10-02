@@ -30,6 +30,7 @@ public enum ExceptionEnum {
     INVALID_FILE_FORMAT(400, "文件格式错误"),
     UPLOAD_IMAGE_EXCEPTION(500, "文件上传异常"),
     INVALID_PARAM(400, "参数错误"),
+    USERNAME_OR_PASSWORD_ERROR(400, "账号或密码错误"),
     VERIFY_CODE_NOT_MATCHING(400, "验证码错误"),
     PASSWORD_NOT_MATCHING(400, "密码错误"),
     USER_NOT_EXIST(404, "用户不存在"),

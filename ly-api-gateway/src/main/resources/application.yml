@@ -16,11 +16,14 @@ zuul:
   routes:
     item-service: /item/**
     user-service: /user/**
+    auth-service: /auth/**
     upload-service:
       path: /upload/**
       service: upload-service
       strip-prefix: false
     search-service: /search/**
+  sensitive-headers:
+  add-host-header: true
 hystrix:
   command:
     default:
@@ -31,4 +34,16 @@ hystrix:
 ribbon:
   connetTimeout: 500
   readTimeout: 4000
+ly:
+  jwt:
+    pubKeyPath: /Users/bystander/rsa.pub # 公钥地址
+    cookieName: LY_TOKEN # cookie的名称
+  filter:
+    allowPaths:
+    - /api/auth
+    - /api/search
+    - /api/user/register
+    - /api/user/check
+    - /api/user/code
+    - /api/item
 
