@@ -54,7 +54,7 @@ public class AuthController {
             throw new LyException(ExceptionEnum.USERNAME_OR_PASSWORD_ERROR);
         }
         //将Token写入cookie中
-        CookieUtils.newBuilder(response).httpOnly().request(request).build(props.getCookieName(), token);
+        CookieUtils.newBuilder(response).httpOnly().maxAge(props.getCookieMaxAge()).request(request).build(props.getCookieName(), token);
         return ResponseEntity.ok().build();
     }
 
@@ -63,15 +63,15 @@ public class AuthController {
      * @param token
      * @return
      */
-    @GetMapping("verity")
-    public ResponseEntity<UserInfo> verityUser(@CookieValue("LY_TOKEN") String token, HttpServletRequest request, HttpServletResponse response) {
+    @GetMapping("verify")
+    public ResponseEntity<UserInfo> verifyUser(@CookieValue("LY_TOKEN") String token, HttpServletRequest request, HttpServletResponse response) {
         try {
             //从Token中获取用户信息
             UserInfo userInfo = JwtUtils.getUserInfo(props.getPublicKey(), token);
             //成功，刷新Token
             String newToken = JwtUtils.generateToken(userInfo, props.getPrivateKey(), props.getExpire());
             //将新的Token写入cookie中，并设置httpOnly
-            CookieUtils.newBuilder(response).httpOnly().maxAge(props.getCookieMaxAge()).request(request).build(props.getCookieName(), token);
+            CookieUtils.newBuilder(response).httpOnly().maxAge(props.getCookieMaxAge()).request(request).build(props.getCookieName(), newToken);
             return ResponseEntity.ok(userInfo);
         } catch (Exception e) {
             //Token无效

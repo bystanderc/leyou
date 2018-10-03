@@ -6,7 +6,6 @@ import com.leyou.gateway.properties.FilterProperties;
 import com.leyou.gateway.properties.JwtProperties;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
-import com.netflix.zuul.exception.ZuulException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -49,12 +48,12 @@ public class LoginFilter extends ZuulFilter {
     }
 
     @Override
-    public Object run() throws ZuulException {
-            //获取上下文
-            RequestContext context = RequestContext.getCurrentContext();
-            //获取请求
-            HttpServletRequest request = context.getRequest();
-            String token = CookieUtils.getCookieValue(request, props.getCookieName());
+    public Object run() {
+        //获取上下文
+        RequestContext context = RequestContext.getCurrentContext();
+        //获取请求
+        HttpServletRequest request = context.getRequest();
+        String token = CookieUtils.getCookieValue(request, props.getCookieName());
         try {
             //从Token获取解析用户信息
             JwtUtils.getUserInfo(props.getPublicKey(), token);
@@ -63,11 +62,17 @@ public class LoginFilter extends ZuulFilter {
             //检验出现异常，返回403
             context.setSendZuulResponse(false);
             context.setResponseStatusCode(403);
-            log.error("非法访问，未登录，地址：{}", request.getRemoteHost(), e );
+            log.error("非法访问，未登录，地址：{}", request.getRemoteHost(), e);
         }
         return null;
     }
 
+    /**
+     * 判断请求URI是不是白名单中的URI
+     *
+     * @param requestURI
+     * @return
+     */
     private Boolean isAllowPath(String requestURI) {
         boolean flag = false;
 
@@ -79,7 +84,6 @@ public class LoginFilter extends ZuulFilter {
             }
         }
         return flag;
-
 
 
     }

@@ -107,7 +107,8 @@ public final class CookieUtils {
                 if (maxAge != null && maxAge > 0)
                     cookie.setMaxAge(maxAge);
                 if (null != request)// 设置域名的cookie
-                    cookie.setDomain(getDomainName(request));
+                    //todo
+                    cookie.setDomain("leyou.com");
                 cookie.setPath("/");
 
                 cookie.setHttpOnly(httpOnly);

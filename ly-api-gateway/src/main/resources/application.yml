@@ -17,6 +17,7 @@ zuul:
     item-service: /item/**
     user-service: /user/**
     auth-service: /auth/**
+    cart-service: /cart/**
     upload-service:
       path: /upload/**
       service: upload-service
@@ -36,7 +37,7 @@ ribbon:
   readTimeout: 4000
 ly:
   jwt:
-    pubKeyPath: /Users/bystander/rsa.pub # 公钥地址
+    pubKeyPath: /Users/bystander/id_rsa.pub # 公钥地址
     cookieName: LY_TOKEN # cookie的名称
   filter:
     allowPaths:

@@ -24,6 +24,7 @@ public enum ExceptionEnum {
     UPDATE_SALEABLE_ERROR(500, "更新商品销售状态错误"),
 
     CATEGORY_NOT_FOUND(204, "分类未查询到"),
+    STOCK_NOT_FOUND(204, "库存查询失败"),
     SPU_NOT_FOUND(201, "SPU未查询到"),
     SKU_NOT_FOUND(201, "SKU未查询到"),
 

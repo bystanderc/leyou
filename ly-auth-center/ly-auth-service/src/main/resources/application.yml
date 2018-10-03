@@ -14,4 +14,4 @@ ly:
     priKeyPath: /Users/bystander/id_rsa.pri # 私钥地址
     expire: 30 # 过期时间,单位分钟
     cookieName: LY_TOKEN
-    cookieMaxAge: 30*60*1000
+    cookieMaxAge: 1800

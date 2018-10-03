@@ -17,10 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import tk.mybatis.mapper.entity.Example;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -228,6 +225,32 @@ public class GoodsServiceImpl implements GoodsService {
 
     }
 
+    @Override
+    public List<Sku> querySkusByIds(List<Long> ids) {
+        List<Sku> skus = skuMapper.selectByIdList(ids);
+        if (CollectionUtils.isEmpty(skus)) {
+            throw new LyException(ExceptionEnum.GOODS_NOT_FOUND);
+        }
+        //填充库存
+        fillStock(ids, skus);
+        return skus;
+    }
+
+    private void fillStock(List<Long> ids, List<Sku> skus) {
+        //批量查询库存
+        List<Stock> stocks = stockMapper.selectByIdList(ids);
+        if (CollectionUtils.isEmpty(stocks)) {
+            throw new LyException(ExceptionEnum.STOCK_NOT_FOUND);
+        }
+        //首先将库存转换为map，key为sku的ID
+        Map<Long, Integer> map = stocks.stream().collect(Collectors.toMap(s -> s.getSkuId(), s -> s.getStock()));
+
+        //遍历skus，并填充库存
+        for (Sku sku : skus) {
+            sku.setStock(map.get(sku.getId()));
+        }
+    }
+
 
     /**
      * 保存sku和库存
@@ -282,6 +305,7 @@ public class GoodsServiceImpl implements GoodsService {
 
     /**
      * 封装发送到消息队列的方法
+     *
      * @param id
      * @param type
      */
