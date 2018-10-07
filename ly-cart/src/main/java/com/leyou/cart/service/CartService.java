@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundHashOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
@@ -118,5 +119,16 @@ public class CartService {
 
         //删除商品
         hashOps.delete(id.toString());
+    }
+
+    @Transactional
+    public void deleteCarts(List<Object> ids, Integer userId) {
+        String key = KEY_PREFIX + userId;
+        BoundHashOperations<String, Object, Object> hashOps = redisTemplate.boundHashOps(key);
+
+
+        for (Object id : ids) {
+            hashOps.delete(id.toString());
+        }
     }
 }

@@ -1,9 +1,14 @@
 server:
-  port: 8088
+  port: 8090
 spring:
   application:
     name: cart-service
   redis:
+    host: 192.168.82.100
+  rabbitmq:
+    virtual-host: /leyou
+    username: leyou
+    password: leyou
     host: 192.168.82.100
 eureka:
   client:

@@ -47,6 +47,7 @@ public enum ExceptionEnum {
     UPDATE_SPEC_PARAM_FAILED(500, "商品规格参数更新失败"),
     DELETE_SPEC_PARAM_FAILED(500, "商品规格参数删除失败"),
     SPEC_PARAM_CREATE_FAILED(500, "新增规格参数失败"),
+    USER_NOT_LOGIN(401, "用户未登录，请登录"),
 
 
     SPEC_GROUP_CREATE_FAILED(500, "新增规格组失败"),

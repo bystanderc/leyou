@@ -4,6 +4,7 @@ import com.leyou.auth.entity.UserInfo;
 import com.leyou.common.enums.ExceptionEnum;
 import com.leyou.common.exception.LyException;
 import com.leyou.common.utils.IdWorker;
+import com.leyou.common.utils.JsonUtils;
 import com.leyou.item.pojo.Sku;
 import com.leyou.order.client.AddressClient;
 import com.leyou.order.client.GoodsClient;
@@ -20,15 +21,13 @@ import com.leyou.order.pojo.OrderStatus;
 import com.leyou.order.utils.PayHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -59,6 +58,9 @@ public class OrderService {
 
     @Autowired
     private PayLogService payLogService;
+
+    @Autowired
+    private AmqpTemplate amqpTemplate;
 
 
     @Transactional
@@ -149,7 +151,15 @@ public class OrderService {
         goodsClient.decreaseStock(orderDto.getCarts());
 
 
-        //todo 删除购物车中已经下单的商品数据, 采用异步mq的方式通知购物车系统删除已购买的商品
+        //todo 删除购物车中已经下单的商品数据, 采用异步mq的方式通知购物车系统删除已购买的商品，传送商品ID和用户ID
+        HashMap<String, Object> map = new HashMap<>();
+        try {
+            map.put("skuIds", skuNumMap.keySet());
+            map.put("userId", user.getId());
+            amqpTemplate.convertAndSend("ly.cart.exchange", "cart.delete" , JsonUtils.toString(map));
+        } catch (Exception e) {
+            log.error("删除购物车消息发送异常，商品ID：{}",skuNumMap.keySet(), e);
+        }
 
         log.info("生成订单，订单编号：{}，用户id：{}", orderId, user.getId());
         return orderId;
