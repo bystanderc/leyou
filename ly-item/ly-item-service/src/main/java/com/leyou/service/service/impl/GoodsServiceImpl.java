@@ -5,6 +5,7 @@ import com.github.pagehelper.PageInfo;
 import com.leyou.common.enums.ExceptionEnum;
 import com.leyou.common.exception.LyException;
 import com.leyou.common.vo.PageResult;
+import com.leyou.item.dto.CartDto;
 import com.leyou.item.pojo.*;
 import com.leyou.service.mapper.*;
 import com.leyou.service.service.GoodsService;
@@ -234,6 +235,17 @@ public class GoodsServiceImpl implements GoodsService {
         //填充库存
         fillStock(ids, skus);
         return skus;
+    }
+
+    @Transactional
+    @Override
+    public void decreaseStock(List<CartDto> cartDtos) {
+        for (CartDto cartDto : cartDtos) {
+            int count = stockMapper.decreaseStock(cartDto.getSkuId(), cartDto.getNum());
+            if (count != 1) {
+                throw new RuntimeException("库存不足");
+            }
+        }
     }
 
     private void fillStock(List<Long> ids, List<Sku> skus) {

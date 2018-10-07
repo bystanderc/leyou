@@ -31,9 +31,14 @@ public class CartController {
     }
 
 
-    //从购物车中删除商品
+    /**
+     * 从购物车中删除商品
+     *
+     * @param id
+     * @return
+     */
     @DeleteMapping("{id}")
-    public ResponseEntity<Void> deleteCart(@PathVariable("id")Long id) {
+    public ResponseEntity<Void> deleteCart(@PathVariable("id") Long id) {
         cartService.deleteCart(id);
         return ResponseEntity.ok().build();
     }
@@ -41,6 +46,7 @@ public class CartController {
 
     /**
      * 更新购物车中商品的数量
+     *
      * @param id  商品ID
      * @param num 修改后的商品数量
      * @return

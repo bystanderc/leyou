@@ -18,6 +18,7 @@ zuul:
     user-service: /user/**
     auth-service: /auth/**
     cart-service: /cart/**
+    order-service: /order-service/**
     upload-service:
       path: /upload/**
       service: upload-service
@@ -31,10 +32,10 @@ hystrix:
       execution:
         isolation:
           thread:
-            timeoutInMilliseconds: 5000
+            timeoutInMilliseconds: 7000
 ribbon:
   connetTimeout: 500
-  readTimeout: 4000
+  readTimeout: 5000
 ly:
   jwt:
     pubKeyPath: /Users/bystander/id_rsa.pub # 公钥地址

@@ -28,6 +28,13 @@ public enum ExceptionEnum {
     SPU_NOT_FOUND(201, "SPU未查询到"),
     SKU_NOT_FOUND(201, "SKU未查询到"),
 
+    RECEIVER_ADDRESS_NOT_FOUND(400, "收获地址不存在"),
+    ORDER_NOT_FOUND(400, "订单不存在"),
+    ORDER_STATUS_EXCEPTION(500, "订单状态异常"),
+    CREATE_PAY_URL_ERROR(500, "常见支付链接异常"),
+    WX_PAY_SIGN_INVALID(400, "微信支付签名异常"),
+    WX_PAY_NOTIFY_PARAM_ERROR(400, "微信支付回调参数异常"),
+
     INVALID_FILE_FORMAT(400, "文件格式错误"),
     UPLOAD_IMAGE_EXCEPTION(500, "文件上传异常"),
     INVALID_PARAM(400, "参数错误"),
