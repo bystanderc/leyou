@@ -77,7 +77,6 @@ public class JwtUtils {
     public static UserInfo getUserInfo(PublicKey publicKey, String token) {
         Jws<Claims> claimsJws = parseToken(publicKey, token);
         Claims body = claimsJws.getBody();
-        Object o = body.get(JwtConstants.JWT_KEY_ID);
         return new UserInfo(
                 ObjectUtils.toLong(body.get(JwtConstants.JWT_KEY_ID)),
                 ObjectUtils.toString(body.get(JwtConstants.JWT_KEY_USER_NAME))
@@ -94,7 +93,6 @@ public class JwtUtils {
     public static UserInfo getUserInfo(byte[] publicKey, String token) throws Exception {
         Jws<Claims> claimsJws = parseToken(publicKey, token);
         Claims body = claimsJws.getBody();
-        Object o = body.get(JwtConstants.JWT_KEY_ID);
         return new UserInfo(
                 ObjectUtils.toLong(body.get(JwtConstants.JWT_KEY_ID)),
                 ObjectUtils.toString(body.get(JwtConstants.JWT_KEY_USER_NAME))

@@ -1,6 +1,5 @@
 package com.leyou.item.pojo;
 
-import com.sun.org.apache.bcel.internal.generic.RET;
 import lombok.Data;
 import tk.mybatis.mapper.annotation.KeySql;
 
