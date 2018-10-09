@@ -58,6 +58,8 @@ public class LoginFilter extends ZuulFilter {
             //从Token获取解析用户信息
             JwtUtils.getUserInfo(props.getPublicKey(), token);
             //解析成功，什么都不做，放行
+
+            //todo 如果做权限管理的话，在这做权限检验
         } catch (Exception e) {
             //检验出现异常，返回403
             context.setSendZuulResponse(false);
