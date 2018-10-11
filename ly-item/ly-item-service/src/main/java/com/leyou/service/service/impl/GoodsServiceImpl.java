@@ -243,7 +243,7 @@ public class GoodsServiceImpl implements GoodsService {
         for (CartDto cartDto : cartDtos) {
             int count = stockMapper.decreaseStock(cartDto.getSkuId(), cartDto.getNum());
             if (count != 1) {
-                throw new RuntimeException("库存不足");
+                throw new LyException(ExceptionEnum.STOCK_NOT_ENOUGH);
             }
         }
     }

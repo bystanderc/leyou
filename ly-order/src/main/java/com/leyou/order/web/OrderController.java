@@ -1,5 +1,6 @@
 package com.leyou.order.web;
 
+import com.leyou.common.vo.PageResult;
 import com.leyou.order.dto.OrderDto;
 import com.leyou.order.pojo.Order;
 import com.leyou.order.service.OrderService;
@@ -67,5 +68,19 @@ public class OrderController {
     @GetMapping("state/{id}")
     public ResponseEntity<Integer> queryOrderStateByOrderId(@PathVariable("id") Long orderId) {
         return ResponseEntity.ok(payLogService.queryOrderStateByOrderId(orderId));
+    }
+
+    /**
+     * 分页查询所有订单
+     *
+     * @param page
+     * @param rows
+     * @return
+     */
+    @GetMapping("list")
+    public ResponseEntity<PageResult<Order>> queryOrderByPage(@RequestParam("page") Integer page,
+                                                              @RequestParam("rows") Integer rows) {
+
+        return ResponseEntity.ok(orderService.queryOrderByPage(page, rows));
     }
 }

@@ -22,6 +22,7 @@ public enum ExceptionEnum {
     GOODS_UPDATE_ERROR(500, "商品更新失败"),
     DELETE_GOODS_ERROR(500, "删除商品错误"),
     UPDATE_SALEABLE_ERROR(500, "更新商品销售状态错误"),
+    STOCK_NOT_ENOUGH(500, "商品库存不足"),
 
     CATEGORY_NOT_FOUND(204, "分类未查询到"),
     STOCK_NOT_FOUND(204, "库存查询失败"),

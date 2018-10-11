@@ -1,10 +1,13 @@
 package com.leyou.order.service;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.leyou.auth.entity.UserInfo;
 import com.leyou.common.enums.ExceptionEnum;
 import com.leyou.common.exception.LyException;
 import com.leyou.common.utils.IdWorker;
 import com.leyou.common.utils.JsonUtils;
+import com.leyou.common.vo.PageResult;
 import com.leyou.item.pojo.Sku;
 import com.leyou.order.client.AddressClient;
 import com.leyou.order.client.GoodsClient;
@@ -26,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import tk.mybatis.mapper.entity.Example;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -114,7 +118,7 @@ public class OrderService {
         //遍历skus，填充orderDetail
         for (Sku sku : skus) {
             Integer num = skuNumMap.get(sku.getId());
-            totalPay = +num * sku.getPrice();
+            totalPay += num * sku.getPrice();
 
             OrderDetail orderDetail = new OrderDetail();
             orderDetail.setOrderId(orderId);
@@ -156,9 +160,9 @@ public class OrderService {
         try {
             map.put("skuIds", skuNumMap.keySet());
             map.put("userId", user.getId());
-            amqpTemplate.convertAndSend("ly.cart.exchange", "cart.delete" , JsonUtils.toString(map));
+            amqpTemplate.convertAndSend("ly.cart.exchange", "cart.delete", JsonUtils.toString(map));
         } catch (Exception e) {
-            log.error("删除购物车消息发送异常，商品ID：{}",skuNumMap.keySet(), e);
+            log.error("删除购物车消息发送异常，商品ID：{}", skuNumMap.keySet(), e);
         }
 
         log.info("生成订单，订单编号：{}，用户id：{}", orderId, user.getId());
@@ -186,7 +190,7 @@ public class OrderService {
 
     }
 
-    public  Order queryById(Long orderId) {
+    public Order queryById(Long orderId) {
         Order order = orderMapper.selectByPrimaryKey(orderId);
         if (order == null) {
             throw new LyException(ExceptionEnum.ORDER_NOT_FOUND);
@@ -203,5 +207,34 @@ public class OrderService {
     @Transactional
     public void handleNotify(Map<String, String> msg) {
         payHelper.handleNotify(msg);
+    }
+
+    public PageResult<Order> queryOrderByPage(Integer page, Integer rows) {
+
+        //开启分页
+        PageHelper.startPage(page, rows);
+
+        Example example = new Example(Order.class);
+
+        //查询订单
+        List<Order> orders = orderMapper.selectByExample(example);
+
+
+        //查询订单详情
+        for (Order order : orders) {
+            OrderDetail orderDetail = new OrderDetail();
+            orderDetail.setOrderId(order.getOrderId());
+            List<OrderDetail> orderDetailList = orderDetailMapper.select(orderDetail);
+
+            order.setOrderDetails(orderDetailList);
+
+            //查询订单状态
+            OrderStatus orderStatus = orderStatusMapper.selectByPrimaryKey(order.getOrderId());
+            order.setOrderStatus(orderStatus);
+        }
+
+        PageInfo<Order> pageInfo = new PageInfo<>(orders);
+
+        return new PageResult<>(pageInfo.getTotal(), pageInfo.getPages(), pageInfo.getList());
     }
 }
