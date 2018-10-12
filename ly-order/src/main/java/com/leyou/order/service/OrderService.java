@@ -178,7 +178,7 @@ public class OrderService {
             throw new LyException(ExceptionEnum.ORDER_STATUS_EXCEPTION);
         }
 
-        String url = payHelper.createPayUrl(orderId, "乐优商城测试", order.getTotalPay());
+        String url = payHelper.createPayUrl(orderId, "乐优商城测试", order.getActualPay());
         if (StringUtils.isBlank(url)) {
             throw new LyException(ExceptionEnum.CREATE_PAY_URL_ERROR);
         }

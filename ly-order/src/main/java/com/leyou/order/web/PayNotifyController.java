@@ -21,7 +21,7 @@ public class PayNotifyController {
     @Autowired
     private OrderService orderService;
 
-    @PostMapping("/wxpay/notify")
+    @PostMapping(value = "/wxpay/notify",produces = "application/xml")
     public ResponseEntity<String> payNotify(@RequestBody Map<String, String> msg) {
         //处理回调结果
         orderService.handleNotify(msg);

@@ -81,8 +81,8 @@ public class PayHelper {
             data.put("body", description);
             //订单号
             data.put("out_trade_no", orderId.toString());
-            //货币
-            data.put("fee_type", "CNY");
+            //货币（默认就是人民币）
+            //data.put("fee_type", "CNY");
             //总金额
             data.put("total_fee", totalPay.toString());
             //调用微信支付的终端ip
@@ -232,13 +232,14 @@ public class PayHelper {
 
             //查询失败
             if (WXPayConstants.FAIL.equals(result.get("result_code"))) {
-                log.error("【支付状态查询】查询微信订单支付结果失败，错误码：{}, 订单编号：{}",result.get("result_code"), orderId);
+                log.error("【支付状态查询】查询微信订单支付结果失败，错误码：{}, 订单编号：{}", result.get("result_code"), orderId);
                 return PayStateEnum.NOT_PAY;
             }
 
             //检验签名
             isSignatureValid(result);
 
+            //查询支付状态
             String state = result.get("trade_state");
             if (StringUtils.equals("SUCCESS", state)) {
                 //支付成功, 修改支付状态等信息
@@ -247,7 +248,7 @@ public class PayHelper {
             } else if (StringUtils.equals("USERPAYING", state) || StringUtils.equals("NOTPAY", state)) {
                 //未支付成功
                 return PayStateEnum.NOT_PAY;
-            }else{
+            } else {
                 //其他返回付款失败
                 return PayStateEnum.FAIL;
             }

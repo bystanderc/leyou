@@ -60,6 +60,7 @@ public class AuthController {
 
     /**
      * 验证用户信息
+     *
      * @param token
      * @return
      */
@@ -77,6 +78,21 @@ public class AuthController {
             //Token无效
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
+    }
+
+    /**
+     * 注销登录
+     *
+     * @param token
+     * @param response
+     * @return
+     */
+    @GetMapping("logout")
+    public ResponseEntity<Void> logout(@CookieValue("LY_TOKEN") String token, HttpServletResponse response) {
+        if (StringUtils.isNotBlank(token)) {
+            CookieUtils.newBuilder(response).maxAge(0).build(props.getCookieName(), token);
+        }
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
 }
