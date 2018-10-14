@@ -7,6 +7,7 @@ import com.leyou.order.pojo.PayLog;
 import com.leyou.order.utils.PayHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
@@ -37,6 +38,7 @@ public class PayLogService {
         payLogMapper.insertSelective(payLog);
     }
 
+    @Transactional
     public Integer queryOrderStateByOrderId(Long orderId) {
         //优先去支付日志表中查询信息
         PayLog payLog = payLogMapper.selectByPrimaryKey(orderId);
